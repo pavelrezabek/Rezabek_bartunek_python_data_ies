@@ -7,8 +7,10 @@ from web3 import Web3
 import json
 
 #connects to external node
-w3 = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
+w3 = Web3(Web3.IPCProvider('/Volumes/SSD_external/ETH_node/geth.ipc'))
 w3.isConnected()
+
+
 #w3.eth.get_block(12345)
 
 def toDict(dictToParse):
@@ -26,7 +28,7 @@ def toDict(dictToParse):
 
 
 def block_to_DF(number_of_blocks):
-    latest_block = w3.eth.get_block("latest")
+    latest_block = w3.eth.get_block(w3.eth.syncing["currentBlock"])
     latest_block_number = latest_block["number"]
     first_block_number = latest_block_number - number_of_blocks
     blocks_to_json = []
@@ -35,8 +37,8 @@ def block_to_DF(number_of_blocks):
         blocks_to_json.append(block_to_json)
     my_frame = pd.DataFrame(blocks_to_json)
     my_frame['tx_number'] = my_frame.transactions.apply(lambda x: len(x))
+    my_frame = my_frame[['number',"hash", 'tx_number',"gasUsed","miner"]]
     return(my_frame)
-my_frame = block_to_DF(4)
 
 
 
@@ -46,15 +48,25 @@ my_frame = block_to_DF(4)
 
 app = Flask(__name__)
 
-df = my_frame
+
+@app.route('/')
+def mainHTML():
+    return render_template("index_main.html")
 
 
-@app.route('/', methods=("POST", "GET"))
-def html_table():
+
+@app.route("/<usr>") # this is just for fun when I load anything different than above specified
+def user(usr):
+    block_number = int(usr)
+    df = block_to_DF(block_number)
+
 
     return render_template('index.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
 
 
 
+
 if __name__ == '__main__':
     app.run()
+
+
