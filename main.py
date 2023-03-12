@@ -19,7 +19,9 @@ import plotly.express as px
 w3 = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
 w3.isConnected()
 
-#it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer.)
+#it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer)
+#w3 = Web3(Web3.IPCProvider('your_pathway_to_the_node'))
+#w3.isConnected()
 
 
 
