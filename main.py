@@ -6,6 +6,15 @@ import web3
 from web3 import Web3
 import json
 
+
+
+import json
+import plotly
+import plotly.express as px
+
+
+
+
 #connects to external node
 w3 = Web3(Web3.IPCProvider('/Volumes/SSD_external/ETH_node/geth.ipc'))
 w3.isConnected()
@@ -55,6 +64,27 @@ def mainHTML():
 
 
 
+@app.route("/plot") 
+def plot_html():
+    #df = block_to_DF(5)
+    df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx')
+
+
+     
+    # Create Bar chart
+    fig = px.bar(df, x='number', y='gasUsed', color='miner', barmode='group')
+     
+    # Create graphJSON
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+     
+    # Use render_template to pass graphJSON to html
+    return render_template('bar.html', graphJSON=graphJSON)
+
+
+
+
+
+
 @app.route("/<usr>") # this is just for fun when I load anything different than above specified
 def user(usr):
     block_number = int(usr)
@@ -62,6 +92,11 @@ def user(usr):
 
 
     return render_template('index.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
+
+
+
+
+
 
 
 
