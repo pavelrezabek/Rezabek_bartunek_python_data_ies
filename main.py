@@ -16,14 +16,12 @@ import plotly.express as px
 
 
 #connects to external node
-w3 = Web3(Web3.IPCProvider('/Volumes/SSD_external/ETH_node/geth.ipc'))
+w3 = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
 w3.isConnected()
 
 #it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer.)
 
 
-
-#w3.eth.get_block(12345)
 
 
 def toDict(dictToParse):
@@ -42,7 +40,7 @@ def toDict(dictToParse):
 #a function that takes as an input the number of blocks that you want the analysis to be done backwards from the current/latest block and saves all needed/useful values into a dataframe.
 
 def block_to_DF(number_of_blocks):
-    latest_block = w3.eth.get_block(w3.eth.syncing["currentBlock"])
+    latest_block = w3.eth.get_block('latest')
     latest_block_number = latest_block["number"]
     first_block_number = latest_block_number - number_of_blocks
     blocks_to_json = []
