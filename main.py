@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session, redirect
 import numpy as np
 import pandas as pd
 
-import web3
+
 from web3 import Web3
 import json
 
@@ -17,11 +17,11 @@ import plotly.express as px
 
 #connects to external node
 w3 = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
-w3.isConnected()
+print(w3.is_connected())
 
 #it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer)
 #w3 = Web3(Web3.IPCProvider('your_pathway_to_the_node'))
-#w3.isConnected()
+#w3.is_connected()
 
 
 
@@ -71,8 +71,8 @@ def mainHTML():
 
 @app.route("/plot") 
 def plot_html():
-    #df = block_to_DF(5)
-    df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx')
+    df = block_to_DF(5)
+    #df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx')
 
 
      
