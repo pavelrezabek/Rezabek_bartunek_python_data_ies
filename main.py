@@ -74,7 +74,7 @@ def mainHTML():
 
 @app.route('/aave')
 def table():
-    df = pd.read_csv('/Users/pavelrezabek/Desktop/python_project/Rezabek_bartunek_python_data_ies/Rezabek_bartunek_python_data_ies/receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
+    df = pd.read_csv('receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
     return render_template('index.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
 
 
@@ -101,7 +101,7 @@ def plot_html():
 
 @app.route("/plot_aave") 
 def plot_aave():
-    df = pd.read_csv('/Users/pavelrezabek/Desktop/python_project/Rezabek_bartunek_python_data_ies/Rezabek_bartunek_python_data_ies/receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
+    df = pd.read_csv('receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
     #df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx.csv',sep = ";")
     df["time"] = df["time"]-1680037880
     df1 = df[(df["currency"] == "USDC") | (df["currency"] == "USDT")| (df["currency"] == "DAI")| (df["currency"] == "WBTC")]
@@ -131,7 +131,7 @@ def start_the_download():
     #connects to external node
     w3_provider = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
     w3_provider.is_connected()
-    last_block_num = 15928351
+    last_block_num = w3_provider.eth.block_number
                     
     while True:
 
