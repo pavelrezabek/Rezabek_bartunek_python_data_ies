@@ -3,4 +3,4 @@ numpy==1.22.4
 pandas==1.5.3
 pandas_stubs==1.2.0.58
 plotly==5.13.1
-web3==5.31.3
+web3==6.0.0

@@ -13,11 +13,16 @@ import plotly
 import plotly.express as px
 
 
+import time
+from processblock import process_block
+
+
+
 
 
 #connects to external node
 w3 = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
-w3.isConnected()
+w3.is_connected()
 
 #it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer)
 #w3 = Web3(Web3.IPCProvider('your_pathway_to_the_node'))
@@ -67,23 +72,91 @@ app = Flask(__name__)
 def mainHTML():
     return render_template("index_main.html")
 
+@app.route('/aave')
+def table():
+    df = pd.read_csv('/Users/pavelrezabek/Desktop/python_project/Rezabek_bartunek_python_data_ies/Rezabek_bartunek_python_data_ies/receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
+    return render_template('index.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
+
 
 
 @app.route("/plot") 
 def plot_html():
-    #df = block_to_DF(5)
-    df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx')
+    df = block_to_DF(5)
+    #df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx.csv',sep = ";")
+    df=df.applymap(str)
+
 
 
      
     # Create Bar chart
-    fig = px.bar(df, x='number', y='gasUsed', color='miner', barmode='group')
+    fig = px.bar(df, x='miner', y='gasUsed', color='number') #, , barmode='group'
      
     # Create graphJSON
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
      
     # Use render_template to pass graphJSON to html
     return render_template('bar.html', graphJSON=graphJSON)
+
+
+
+@app.route("/plot_aave") 
+def plot_aave():
+    df = pd.read_csv('/Users/pavelrezabek/Desktop/python_project/Rezabek_bartunek_python_data_ies/Rezabek_bartunek_python_data_ies/receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
+    #df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx.csv',sep = ";")
+    df=df.applymap(str)
+
+
+
+     
+    # Create Bar chart
+    fig = px.bar(df, x='currency', y='borrowRate') 
+     
+    # Create graphJSON
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+     
+    # Use render_template to pass graphJSON to html
+    return render_template('bar.html', graphJSON=graphJSON)
+
+
+
+
+
+
+
+
+
+
+@app.route("/download_new_tx") 
+def start_the_download():
+    #connects to external node
+    w3_provider = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
+    w3_provider.is_connected()
+    last_block_num = 15928351
+                    
+    while True:
+
+        start_time = time.time()
+
+        try:   
+            latest_block = w3_provider.eth.get_block(last_block_num, full_transactions=True)
+            
+            process_block(latest_block, w3_provider)
+
+            process_time = time.time() - start_time
+            print()
+            print("BLOCK", last_block_num)
+            print(str(len(latest_block["transactions"])) + " transactions")
+            print(str(round(process_time))+ "sec processing time")
+
+            last_block_num += 1
+            time.sleep(1)
+
+        except:
+            print()
+            print("BLOCK",last_block_num)
+            print("Error API failed")
+            print()
+            time.sleep(3)
 
 
 
@@ -97,9 +170,6 @@ def user(usr):
 
 
     return render_template('index.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
-
-
-
 
 
 
