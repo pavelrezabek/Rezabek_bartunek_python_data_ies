@@ -1,3 +1,3 @@
 # Rezabek_bartunek_python_data_ies
 
-This API connects to a node, and gives overview of last blocks including number of the block, hash value of the block, transaction numbers in the current block, gas used, miner. The API further shows graphically for gas used and other variables.
+This API connects to a node, and gives overview of last blocks including number of the block, hash value of the block, transaction numbers in the current block, gas used, miner. The API further shows graphically used gas per block along with the miner who validated the block. On x-axis the viewer can see the number of the block. Run on your local server to get information about past blocks. Use your local server with /plot to view the graph with information about the past 5 blocks.

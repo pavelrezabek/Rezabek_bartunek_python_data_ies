@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session, redirect
 import numpy as np
 import pandas as pd
 
-import web3
+
 from web3 import Web3
 import json
 
@@ -26,7 +26,7 @@ w3.is_connected()
 
 #it is preffered to be connected to a local node, in that case,  ignore line 19 and 20, and use the two lines below with the path to node running on your computer)
 #w3 = Web3(Web3.IPCProvider('your_pathway_to_the_node'))
-#w3.isConnected()
+#w3.is_connected()
 
 
 
