@@ -5,7 +5,7 @@ from processblock import process_block
 #connects to external node
 w3_provider = Web3(Web3.HTTPProvider('https://eth.llamarpc.com'))
 w3_provider.is_connected()
-last_block_num = 15928351
+last_block_num = w3_provider.eth.block_number
                 
 while True:
 
