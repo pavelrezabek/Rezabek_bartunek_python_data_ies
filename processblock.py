@@ -5,10 +5,10 @@ from hexbytes import HexBytes
 def process_block(block_dict, w3_provider):
 
     for tx_object in block_dict['transactions']:
-
+        # line 9 identifies whether the transactions interacts with AAVE V2 contract
         if tx_object['to'] == '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9':
             print('AAVE transaction detected in txn index', tx_object['transactionIndex'])
-
+            #below handles when API doesn't want to send transactions
             try:
                 tx_receipt = w3_provider.eth.get_transaction_receipt(tx_object['hash'])
             
@@ -23,7 +23,7 @@ def process_block(block_dict, w3_provider):
             
             if len(tx_receipt['logs']) < 7:
                 print('Not formatted for this type of transaction')
-
+            #identifies the data where all information about aave is (borrow rate, value etc.)
             elif tx_receipt['logs'] != [] and tx_receipt['logs'][6]["topics"][0] == HexBytes('0xc6a898309e823ee50bac64e45ca8adba6690e99e7841c45d754e2a38e9019d9b'):
                 data = tx_receipt['logs'][6]['data']
 
@@ -47,7 +47,7 @@ def process_block(block_dict, w3_provider):
                 value = data_list[1]
                 
                 currency = tx_receipt['logs'][5]['address']
-
+                #hash of currencies to readable names
                 if currency == "0x6B175474E89094C44Da98b954EedeAC495271d0F":
                     currency = "DAI"
                 if currency == "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48":
@@ -61,13 +61,13 @@ def process_block(block_dict, w3_provider):
                     value = value/100000000
                 print("    Borrowed funds:", value)
                 print("    Borrowed currency:", currency)
-
+                #saves what we need in csv
                 with open("receipt.csv", "a") as f:
                     line = str(round(time.time()/10)*10) + "," + str(tx_receipt['blockNumber']) + "," + str(tx_object['transactionIndex']) + "," + str(tx_object['hash'].hex()) + "," + str(borrow_rate) + "," + str(borrow_rate_mode) + "," + str(value) + "," + str(currency) + "\n"
                     f.write(line)
             elif len(tx_receipt['logs']) < 8:
                 print('Not formatted for this type of transaction')
-
+            #handles problem if there is 8 logs in AAVE transactions (happens rarely but happens -> happens when same address already borrowed in the past and the loan is still active)
             elif tx_receipt['logs'] != [] and tx_receipt['logs'][7]["topics"][0] == HexBytes('0xc6a898309e823ee50bac64e45ca8adba6690e99e7841c45d754e2a38e9019d9b'):
                 data = tx_receipt['logs'][7]['data']
 

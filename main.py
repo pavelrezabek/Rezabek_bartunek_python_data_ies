@@ -6,9 +6,6 @@ import pandas as pd
 from web3 import Web3
 import json
 
-
-
-import json
 import plotly
 import plotly.express as px
 
@@ -136,7 +133,7 @@ def start_the_download():
     while True:
 
         start_time = time.time()
-
+        #try and except - to avoid getting error when +1 block is not yet confirmed
         try:   
             latest_block = w3_provider.eth.get_block(last_block_num, full_transactions=True)
             
@@ -149,7 +146,8 @@ def start_the_download():
             print(str(round(process_time))+ "sec processing time")
 
             last_block_num += 1
-            time.sleep(1)
+            #sleep time set to minimize calls to external node and to still be able to process block under 10s
+            time.sleep(2)
 
         except:
             print()
