@@ -103,13 +103,13 @@ def plot_html():
 def plot_aave():
     df = pd.read_csv('/Users/pavelrezabek/Desktop/python_project/Rezabek_bartunek_python_data_ies/Rezabek_bartunek_python_data_ies/receipts_downloaded.csv',sep = ",") #we may change for receipts.csv but it take time to fill the file with new data, the absolute path is neccecary to be changed to the path where the file is located on your computer
     #df = pd.read_csv('/Users/pavelrezabek/Desktop/last_5_tx.csv',sep = ";")
-    df=df.applymap(str)
-
+    df["time"] = df["time"]-1680037880
+    df1 = df[(df["currency"] == "USDC") | (df["currency"] == "USDT")| (df["currency"] == "DAI")| (df["currency"] == "WBTC")]
 
 
      
     # Create Bar chart
-    fig = px.bar(df, x='currency', y='borrowRate') 
+    fig = px.line(df1, x='time', y='borrowRate',color='currency') 
      
     # Create graphJSON
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
